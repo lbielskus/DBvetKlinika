@@ -1,0 +1,270 @@
+-- phpMyAdmin SQL Dump
+-- version 5.1.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Dec 06, 2021 at 01:04 PM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 8.0.11
+
+
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+
+
+--
+-- Database: `vet`
+--
+
+
+
+-- --------------------------------------------------------
+
+
+
+--
+-- Table structure for table `logs`
+--
+
+
+
+CREATE TABLE `logs` (
+`id` int(11) NOT NULL,
+`pet_id` int(11) NOT NULL,
+`description` text NOT NULL,
+`status` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+--
+-- Dumping data for table `logs`
+--
+
+
+
+INSERT INTO `logs` (`id`, `pet_id`, `description`, `status`) VALUES
+(1, 5, 'Vaccinated', 'done'),
+(2, 5, 'Nails have been cut', 'done'),
+(4, 6, 'Vaccine was done', 'done');
+
+
+
+-- --------------------------------------------------------
+
+
+
+--
+-- Table structure for table `medications`
+--
+
+
+
+CREATE TABLE `medications` (
+`id` int(11) NOT NULL,
+`name` varchar(300) NOT NULL,
+`description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+--
+-- Dumping data for table `medications`
+--
+
+
+
+INSERT INTO `medications` (`id`, `name`, `description`) VALUES
+(1, 'Tick Vaccine', 'use once every month'),
+(2, 'Tick Vaccine Pro', 'use once every quarter'),
+(3, 'Tick Vaccine Year', 'Use Once A Year');
+
+
+
+-- --------------------------------------------------------
+
+
+
+--
+-- Table structure for table `pets`
+--
+
+
+
+CREATE TABLE `pets` (
+`id` int(11) NOT NULL,
+`name` varchar(30) NOT NULL,
+`dob` date NOT NULL,
+`client_email` varchar(50) NOT NULL,
+`archived` tinyint(4) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+--
+-- Dumping data for table `pets`
+--
+
+
+
+INSERT INTO `pets` (`id`, `name`, `dob`, `client_email`, `archived`) VALUES
+(4, 'Rikis', '2017-01-08', 'rosita@gmail.com', 0),
+(5, 'Rudis', '2015-01-08', 'simona@gmail.com', 0),
+(6, 'Levis', '2018-01-08', 'lukas@gmail.com', 0),
+(7, 'Taja', '2016-05-01', 'lina@lina.com', 0);
+
+
+
+-- --------------------------------------------------------
+
+
+
+--
+-- Table structure for table `prescriptions`
+--
+
+
+
+CREATE TABLE `prescriptions` (
+`id` int(11) NOT NULL,
+`medication_id` int(11) NOT NULL,
+`pet_id` int(11) NOT NULL,
+`comment` text NOT NULL,
+`timestamp` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+--
+-- Dumping data for table `prescriptions`
+--
+
+
+
+INSERT INTO `prescriptions` (`id`, `medication_id`, `pet_id`, `comment`, `timestamp`) VALUES
+(1, 1, 5, 'Use once every day', '2021-10-04 19:14:58'),
+(2, 1, 5, 'Use once every week', '2021-10-04 19:24:58'),
+(3, 1, 6, 'Use twice a day', '2021-10-04 19:25:19'),
+(4, 2, 6, 'Use twice a month', '2021-10-05 14:19:03'),
+(5, 3, 6, 'come back after year', '2021-10-06 13:37:16'),
+(6, 1, 4, 'Vaccine was applied', '2021-10-06 15:01:11');
+
+
+
+--
+-- Indexes for dumped tables
+--
+
+
+
+--
+-- Indexes for table `logs`
+--
+ALTER TABLE `logs`
+ADD PRIMARY KEY (`id`),
+ADD KEY `logs with pet` (`pet_id`);
+
+
+
+--
+-- Indexes for table `medications`
+--
+ALTER TABLE `medications`
+ADD PRIMARY KEY (`id`);
+
+
+
+--
+-- Indexes for table `pets`
+--
+ALTER TABLE `pets`
+ADD PRIMARY KEY (`id`);
+
+
+
+--
+-- Indexes for table `prescriptions`
+--
+ALTER TABLE `prescriptions`
+ADD PRIMARY KEY (`id`),
+ADD KEY `prescription to meds` (`medication_id`),
+ADD KEY `prescription to pets` (`pet_id`);
+
+
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+
+
+--
+-- AUTO_INCREMENT for table `logs`
+--
+ALTER TABLE `logs`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+
+
+--
+-- AUTO_INCREMENT for table `medications`
+--
+ALTER TABLE `medications`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+
+
+--
+-- AUTO_INCREMENT for table `pets`
+--
+ALTER TABLE `pets`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+
+
+--
+-- AUTO_INCREMENT for table `prescriptions`
+--
+ALTER TABLE `prescriptions`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+
+
+--
+-- Constraints for dumped tables
+--
+
+
+
+--
+-- Constraints for table `logs`
+--
+ALTER TABLE `logs`
+ADD CONSTRAINT `logs with pet` FOREIGN KEY (`pet_id`) REFERENCES `pets` (`id`);
+
+
+
+--
+-- Constraints for table `prescriptions`
+--
+ALTER TABLE `prescriptions`
+ADD CONSTRAINT `prescription to meds` FOREIGN KEY (`medication_id`) REFERENCES `medications` (`id`),
+ADD CONSTRAINT `prescription to pets` FOREIGN KEY (`pet_id`) REFERENCES `pets` (`id`);
+COMMIT;
+
+
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
